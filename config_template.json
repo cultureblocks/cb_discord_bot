@@ -1,0 +1,233 @@
+{
+    "be_cool_react": {
+        "emoji": "\ud83d\ude0e",
+        "message_id": 1234
+    },
+    "channel_setup_data": [
+        {
+            "channel_name": "\ud83d\udc9bconnect",
+            "channel_position": 1,
+            "channel_permissions": {
+                "read_messages": true,
+                "manage_channels": false,
+                "manage_permissions": false,
+                "manage_webhooks": false,
+                "create_instant_invite": false,
+                "send_messages": true,
+                "send_messages_in_threads": true,
+                "create_public_threads": true,
+                "create_private_threads": false,
+                "embed_links": true,
+                "attach_files": true,
+                "add_reactions": true,
+                "use_external_emojis": true,
+                "use_external_stickers": true,
+                "mention_everyone": false,
+                "manage_messages": false,
+                "manage_threads": false,
+                "read_message_history": true,
+                "send_tts_messages": false,
+                "use_application_commands": true
+            }
+        },
+        {
+            "channel_name": "swirl",
+            "channel_position": 2,
+            "channel_permissions": {
+                "read_messages": true,
+                "manage_channels": false,
+                "manage_permissions": false,
+                "manage_webhooks": false,
+                "create_instant_invite": false,
+                "send_messages": true,
+                "send_messages_in_threads": false,
+                "create_public_threads": false,
+                "create_private_threads": false,
+                "embed_links": false,
+                "attach_files": false,
+                "add_reactions": true,
+                "use_external_emojis": true,
+                "use_external_stickers": false,
+                "mention_everyone": false,
+                "manage_messages": false,
+                "manage_threads": false,
+                "read_message_history": true,
+                "send_tts_messages": false,
+                "use_application_commands": false
+            }
+        },
+        {
+            "channel_name": "\ud83d\udfe6blocks",
+            "channel_position": 97,
+            "channel_permissions": {
+                "read_messages": true,
+                "manage_channels": false,
+                "manage_permissions": false,
+                "manage_webhooks": false,
+                "create_instant_invite": false,
+                "send_messages": false,
+                "send_messages_in_threads": false,
+                "create_public_threads": false,
+                "create_private_threads": false,
+                "embed_links": false,
+                "attach_files": false,
+                "add_reactions": true,
+                "use_external_emojis": true,
+                "use_external_stickers": false,
+                "mention_everyone": false,
+                "manage_messages": false,
+                "manage_threads": false,
+                "read_message_history": true,
+                "send_tts_messages": false,
+                "use_application_commands": false
+            }
+        },
+        {
+            "channel_name": "\ud83d\udd36reflect",
+            "channel_position": 98,
+            "channel_permissions": {
+                "read_messages": true,
+                "manage_channels": false,
+                "manage_permissions": false,
+                "manage_webhooks": false,
+                "create_instant_invite": false,
+                "send_messages": false,
+                "send_messages_in_threads": true,
+                "create_public_threads": false,
+                "create_private_threads": false,
+                "embed_links": true,
+                "attach_files": true,
+                "add_reactions": true,
+                "use_external_emojis": true,
+                "use_external_stickers": true,
+                "mention_everyone": false,
+                "manage_messages": false,
+                "manage_threads": false,
+                "read_message_history": true,
+                "send_tts_messages": false,
+                "use_application_commands": false
+            },
+            "thread_embed_content": {
+                "thread_name": " ",
+                "intro": " ",
+                "links": " ",
+                "thread": " "
+            }
+        }
+    ],
+    "guilds_data": [
+        {
+            "guild_id": 1234,
+            "guild_name": "Name",
+            "connect_channel": 1234,
+            "blocks_channel": 1234,
+            "reflect_channel": 1234,
+            "reflect_thread": 1234
+        }
+    ],
+    "intro_content": [
+        {
+            "title": "Welcome",
+            "guide": "Content",
+            "prompt": "Do a thing"
+        }
+    ],
+    "intros_data": [
+        {
+            "guild_id": 1,
+            "creator_id": 2,
+            "creator_name": "name",
+            "intro_channel_id": 3,
+            "block_channel_id": 4,
+            "block_color": 5,
+            "current_turn": 6,
+            "messages": [
+                "stuff"
+            ],
+            "synthesis": null,
+            "rating": 0,
+            "in_cb": false
+        }
+    ],
+    "swirls_data": [
+    ],
+    "prompts_data": {
+        "member_prompts": [
+            {
+                "member_id": 1,
+                "member_name": "name",
+                "last_prompts": {
+                    "headline": "headline",
+                    "emulsifier": "emulsifier."
+                },
+                "headlines": [
+                    {
+                        "headline": "headline",
+                        "weight": 0,
+                        "counter": 2
+                    }
+                ],
+                "emulsifiers": [
+                    {
+                        "emulsifier": "emulsifier",
+                        "weight": 0,
+                        "counter": 2
+                    }
+                ]
+            }
+        ],
+        "guild_prompts": [
+            {
+                "guild_id": 1234,
+                "guild_name": "name",
+                "headlines": [
+                    {
+                        "headline": "headline",
+                        "weight": 0,
+                        "counter": 1
+                    }
+                ],
+                "emulsifiers": [
+                    {
+                        "emulsifier": "emulsifier",
+                        "weight": 0,
+                        "counter": 1
+                    }
+                ]
+            }
+        ],
+        "global_prompts": {
+            "headlines": [
+                {
+                    "headline": "headline",
+                    "weight": 0,
+                    "counter": 0
+                }
+            ],
+            "emulsifiers": [
+                {
+                    "emulsifier": "emulsifier",
+                    "weight": 1,
+                    "counter": 0
+                }
+            ]
+        }
+    },
+    "check_ins": [
+        "Would you take an all expense paid trip to the moon?"
+    ],
+    "end_messages": [
+        {
+            "theme_name": "theme",
+            "weight": 1,
+            "counter": 2,
+            "messages": [
+                {
+                    "end_message": "string",
+                    "weight": 1,
+                    "counter": 2
+                }
+            ]
+        }
+    ]
+}
