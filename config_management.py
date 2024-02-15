@@ -303,6 +303,8 @@ async def update_prompts_data(config_data, subject, headline, emulsifier, rating
     await save_main_json(config_data)
 
 def update_prompt_data(data, headline, emulsifier, rating):
+    print (f"------- prompt data = {data}")
+    print (f"------- headline {headline} emulsifier {emulsifier} and rating {rating}")
     weight_change = 0
 
     if rating < 2:
@@ -313,22 +315,23 @@ def update_prompt_data(data, headline, emulsifier, rating):
     for key, value in data.items():
         if key == "headlines":
             for item in value:
+                print(f"item headline = {item['headline']}")
                 if item["headline"] == headline:
-                    item["weight"] += weight_change
+                    item["weight"] = max(item["weight"] + weight_change, 1)
                     item["counter"] += 1
                     break
             else:
-                new_weight = min(weight_change, 0)
+                new_weight = 1
                 value.append({"headline": headline, "weight": new_weight, "counter": 1})
 
         elif key == "emulsifiers":
             for item in value:
                 if item["emulsifier"] == emulsifier:
-                    item["weight"] += weight_change
+                    item["weight"] = max(item["weight"] + weight_change, 1)
                     item["counter"] += 1
                     break
             else:
-                new_weight = min(weight_change, 0)
+                new_weight = 1
                 value.append({"emulsifier": emulsifier, "weight": new_weight, "counter": 1})
 
 

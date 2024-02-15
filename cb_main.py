@@ -482,7 +482,8 @@ async def next_swirl_message(swirl):
     elif swirl_data["current_turn"] < len(swirl_data["turns_id_list"]):
         await new_turn_message(swirl)
 
-    elif len(swirl_data["members_id_list"]) < len(set(swirl_data["ratings_dict"].keys())):
+    elif len(swirl_data["members_id_list"]) > len(set(swirl_data["ratings_dict"].keys())):
+        print ("==== 1")
         await synthesis_message(swirl)
 
     else:
@@ -539,18 +540,19 @@ async def synthesis_message(swirl):
     await swirl.swirl_channel.send(f"{mentions}, this is the synthesis of your Swirl \n \n {swirl.synthesis} \n \n You have 60 seconds to rate it on a scale of 0 (totally unsatisfied) to 5 (totally satisfied)")
     
     await asyncio.sleep(90)
-    if len(swirl.members) < len(set(swirl.ratings.keys())):
+    if len(swirl.members) > len(set(swirl.ratings.keys())):
         for member in swirl.members:
             if member not in swirl.ratings:
                 swirl.ratings[member] = 3
 
         await swirl.swirl_channel.send("Time is up, a rating of 3 has been applied to anyone who hasn't responded")
-        swirl.creator = bot.user # So creator can start a new swirl before data deletes
         await config_management.save_swirl_data(config_data, swirl) 
         await next_swirl_message(swirl)
 
 
 async def new_block_message(swirl):
+    swirl.creator = bot.user # So creator can start a new swirl before data deletes
+    
     end_messages_data = config_data.get("end_messages", [])
     available_categories = [category for category in end_messages_data if category["weight"] > 0]
     selected_category = random.choices(available_categories, weights=[category["weight"] for category in available_categories])[0]
@@ -570,12 +572,11 @@ async def new_block_message(swirl):
     ratings = list(swirl.ratings.values())
     average_rating = sum(ratings) / len(ratings)
     swirl.ratings[swirl.guild] = average_rating
+    print (f"swirl ratings after adding guild and avg ========= {swirl.ratings}")
 
     # Update prompts data for each member and guild
     for subject, rating in swirl.ratings.items():
         await config_management.update_prompts_data(config_data, subject, swirl.headline, swirl.emulsifier, rating)
-    # And for global data
-    await config_management.update_prompts_data(config_data, swirl.guild, swirl.headline, swirl.emulsifier, average_rating)
 
     # Send block to all guilds
     for guild_id, block_channel_id in block_wall.items():
@@ -700,6 +701,7 @@ async def load_swirl_or_intro(bot, data, container, load_function, next_function
         container[channel.id] = obj
         await channel.send(f"This {obj.__class__.__name__} has resumed")
         await next_function(obj)
+        # Doesn't load next object until next_function completes. Can be a problem, especially with asyncio.sleep
     except Exception as e:
         config_management.log_with_timestamp(f"Couldn't load {obj.__class__.__name__} for {obj.creator.name}: {e}")
 

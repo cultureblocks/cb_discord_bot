@@ -150,6 +150,39 @@
         }
     ],
     "swirls_data": [
+        {
+            "guild_id": 1234,
+            "creator_id": 1234,
+            "headline": "headline",
+            "emulsifier": "emulsifier",
+            "members_id_list": [
+                12,
+                34,
+                56
+            ],
+            "swirl_channel_id": 1234,
+            "block_channel_id": 1234,
+            "block_color": 1234567,
+            "turns_id_list": [
+                12,
+                34,
+                56,
+                12,
+                34,
+                56,
+                12,
+                34,
+                56
+            ],
+            "current_turn": 2,
+            "messages": [
+                "message",
+                "another message"
+            ],
+            "synthesis": "synthesis",
+            "ratings_dict": {},
+            "destruct": 17
+        }
     ],
     "prompts_data": {
         "member_prompts": [
@@ -163,14 +196,14 @@
                 "headlines": [
                     {
                         "headline": "headline",
-                        "weight": 0,
+                        "weight": 1,
                         "counter": 2
                     }
                 ],
                 "emulsifiers": [
                     {
                         "emulsifier": "emulsifier",
-                        "weight": 0,
+                        "weight": 1,
                         "counter": 2
                     }
                 ]
@@ -183,35 +216,19 @@
                 "headlines": [
                     {
                         "headline": "headline",
-                        "weight": 0,
+                        "weight": 1,
                         "counter": 1
                     }
                 ],
                 "emulsifiers": [
                     {
                         "emulsifier": "emulsifier",
-                        "weight": 0,
+                        "weight": 1,
                         "counter": 1
                     }
                 ]
             }
-        ],
-        "global_prompts": {
-            "headlines": [
-                {
-                    "headline": "headline",
-                    "weight": 0,
-                    "counter": 0
-                }
-            ],
-            "emulsifiers": [
-                {
-                    "emulsifier": "emulsifier",
-                    "weight": 1,
-                    "counter": 0
-                }
-            ]
-        }
+        ]
     },
     "check_ins": [
         "Would you take an all expense paid trip to the moon?"
