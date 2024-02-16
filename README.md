@@ -1,6 +1,11 @@
 # culture-blocks
 
-https://github.com/cultureblocks/cb_discord_bot/blob/master/cb_discord_bot_intro.mp4
+
+
+
+
+https://github.com/cultureblocks/cb_discord_bot/assets/154528712/233104ac-d40a-4ce3-a385-5a1784432985
+
 
 
 This is the first thing I've built. Issues and PRs are open, feedback is awesome.
