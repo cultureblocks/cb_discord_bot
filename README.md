@@ -5,7 +5,7 @@ This is the first thing I've built. Issues and PRs are open, feedback is awesome
 Design:
 
 - Part of CB's intent is to generalize and abstract the foundational pieces of organizing that every group contends with - establishing connections, discovering purpose, managing power, etc. The bot can be used for casual and silly purposes or for advanced teams to work through difficult issues and everything in between.
-- There were lots of ideas that didn't make it into this bot either because my skills were inadequate, they were too complicated/niche for an MVP, or they don't work in this format. These will be further explored using web3 tech.
+- There are lots of ideas that didn't make it into this bot either because they were above my skill level, they were too niche for the MVP, or they don't work in this format. These will be further explored using web3 tech.
 
 Free and Pay versions:
 
@@ -14,9 +14,9 @@ Free and Pay versions:
 
 Contact:
 
-- My tag is @maenswirony here, discord, charmverse, and gmail
-- To talk organizational philosophy, design, tech, culture, spirituality, social systems, economics, whatever, jump in discord :)
-- To request adding the bot to your server or inquire about paid features hit me up on any platform
+- My tag is @maenswirony here, discord, charmverse, and gmail.
+- To talk organizational philosophy, design, tech, culture, spirituality, social systems, economics, or whatever, jump in discord. :)
+- To request adding the bot to your server or inquire about paid features hit me up on any platform.
 
 Links:
 
