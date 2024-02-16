@@ -1,5 +1,8 @@
 # culture-blocks
 
+[![Watch the video](https://cdn.loom.com/sessions/thumbnails/2a4f73608ba947fc8f37db3dbbabd4c1-with-play.gif)](https://www.loom.com/share/2a4f73608ba947fc8f37db3dbbabd4c1?sid=58c8e835-ffe8-4d05-9e55-3e578c327258)
+
+
 This is the first thing I've built. Issues and PRs are open, feedback is awesome.
 
 Design:
