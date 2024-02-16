@@ -18,7 +18,7 @@ Design:
 Free and Pay versions:
 
 - This version is paid for with cultural and informational capital via the connected Blocks channels, which allows everyone using the bot to see how everyone else is using it. That way we can discover interesting ways to use it faster together.
-- Private Block channels and custom features can be negotiated.
+- Private Block channels and custom features are available for negotiable rates upon request.
 
 Contact:
 
