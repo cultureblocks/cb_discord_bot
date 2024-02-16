@@ -227,8 +227,8 @@ async def intro(ctx):
             await ctx.respond("You have already completed your Intro!")
             return
     
-    await ctx.respond("Starting an Intro Swirl...")
-    await start_intro_flow(ctx.guild, ctx.author)
+    channel_id = await start_intro_flow(ctx.guild, ctx.author)
+    await ctx.respond(f"Starting an Intro Swirl...<#{channel_id}>")
 
 
 # Upon reacting to rules in CB checks if intro completed
@@ -251,13 +251,15 @@ async def on_raw_reaction_add(payload):
                 return
             
             else:
+                intro_channel = bot.get_channel(member_data["intro_channel_id"])
+                block_channel = bot.get_channel(member_data["block_channel_id"])
                 block_color = config_management.get_color_from_string(payload.member.name)
                 
                 intro = Intro(
                     guild,
                     payload.member,
-                    member_data["intro_channel_id"],
-                    member_data["block_channel_id"],
+                    intro_channel,
+                    block_channel,
                     block_color
                 )
                 intro.synthesis = member_data["synthesis"]
@@ -306,33 +308,44 @@ async def start_intro_flow(guild, member):
     intros[intro.intro_channel.id]=intro
     await config_management.save_intro_data(config_data, intro)
     embed_color = config_management.get_random_color()
+    await intro_channel.send(f"{member.mention}, your Intro is starting")
     await next_intro_message(intro, config_data, embed_color)
+    return intro.intro_channel.id
 
 
 async def next_intro_message(intro, config_data, embed_color):
     print(f"current turn = {intro.current_turn} and len turns = {len(intro.turns)}")
-    if intro.current_turn < len(intro.turns):
+    if intro.current_turn < len(intro.turns) - 1:
         embed = await intro.get_intro_message_embed(config_data, embed_color)
         await intro.intro_channel.send(embed=embed)
+    elif intro.current_turn == len(intro.turns) - 1:
+        video_path = 'cb_discord_bot_intro.mp4'
+        # with open(video_path, 'rb') as f:
+        #     video_data = f.read()
+        video_file = discord.File(video_path, filename='cb_discord_bot_intro.mp4')
+        await intro.intro_channel.send("Here's a video demo to tie it all together", file=video_file)
+        await asyncio.sleep(20)
+        await intro.intro_channel.send("When you're done watching, send any message to finish your intro.")
+
     else:
         await intro.intro_channel.send(f"I've crafted this Intro for you. \n\n {intro.synthesis} \n\n Please rate your satisfaction with it from 0-5.")
 
-
 async def finish_intro(intro):
-    if intro.rating < 3 and intro.current_turn < 8:
+    if intro.rating < 3 and intro.current_turn < len(intro.turns) + 4:
         await intro.intro_channel.send("OK, let me try again")
         await intro.next_turn()
         await intro.intro_channel.send(f"Here's a new one. \n\n {intro.synthesis} \n\n Please rate your satisfaction with it from 0-5.")
         return
-    elif intro.rating < 3 and intro.current_turn >= 8:
+    elif intro.rating < 3 and intro.current_turn == len(intro.turns) + 4:
         embed = await intro.get_intro_synthesis_embed()
         embed_message = await intro.block_channel.send(embed=embed)
-        await intro.intro_channel.send(f"Sorry I couldn't do better :( here's your Intro Block ---> {embed_message.jump_url} \n\n This channel will delete in five minutes.")
+        await intro.intro_channel.send(f"Sorry I couldn't do better :( here's a promotion and your Intro Block ---> {embed_message.jump_url} \n\n This channel will delete in five minutes.")
     else:
         embed = await intro.get_intro_synthesis_embed()
         embed_message = await intro.block_channel.send(embed=embed)
-        await intro.intro_channel.send(f"Great, I've printed you a new Intro Block ---> {embed_message.jump_url} \n\n This channel will be deleted in five minutes.")
+        await intro.intro_channel.send(f"Great, Let me give you a promotion and print you a new Intro Block ---> {embed_message.jump_url} \n\n This channel will be deleted in five minutes.")
     
+    # Print to all block channels? TODO
     await asyncio.sleep(10)
     if intro.guild.id == int(CB_GUILD):
         await print_cb_intro(intro)
@@ -347,7 +360,7 @@ async def print_cb_intro(intro):
     await cb_intros_channel.send(embed=embed)
 
     intro.in_cb = True
-    await config_management.save_intro_data(intro)
+    await config_management.save_intro_data(config_data, intro)
 
     role = discord.utils.get(intro.guild.roles, name="Block Builders")
     await intro.creator.add_roles(role)
@@ -621,8 +634,10 @@ async def on_message(message: discord.Message):
     if message.channel.id in intros:
         intro = intros[message.channel.id]
 
-        if intro.current_turn <= len(intro.turns):
-            await intro.append_intro_response(config_data, message.content)
+        if intro.current_turn < len(intro.turns):
+            if intro.current_turn != len(intro.turns) - 1:
+                await intro.append_intro_response(config_data, message.content)
+            await intro.next_turn()
             await config_management.save_intro_data(config_data, intro)
             await asyncio.sleep(1)
             embed_color = config_management.get_random_color()
@@ -636,6 +651,8 @@ async def on_message(message: discord.Message):
             intro.rating = rating
             await config_management.save_intro_data(config_data, intro)
             await finish_intro(intro)
+
+
 
 
     # Swirls
@@ -696,8 +713,11 @@ async def load_swirl_or_intro(bot, data, container, load_function, next_function
         obj = await load_function(bot, data)
         if obj.__class__.__name__ == "Intro":
             channel = obj.intro_channel
-        else:
+        elif obj.__class__.__name__ == "Swirl":
             channel = obj.swirl_channel
+        else:
+            config_management.log_with_timestamp(f"Failed to load object with data {data}")
+            return
         container[channel.id] = obj
         await channel.send(f"This {obj.__class__.__name__} has resumed")
         await next_function(obj)
@@ -737,6 +757,7 @@ async def on_ready():
     # Load existing Intros
     for intro_data in intros_data:
         await load_swirl_or_intro(bot, intro_data, intros, config_management.load_intro, next_intro_message)
+        print(f"intro data = {intros}")
 
     
 

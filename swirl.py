@@ -163,7 +163,7 @@ class Intro(Swirl):
         self.block_channel = block_channel
         self.block_color = block_color
 
-        self.turns = [0,1,2,3]
+        self.turns = [0,1,2,3,4]
         self.current_turn = 0
         self.messages = []
         self.context = "The following text is a set of answers to some get to know you questions for a new member to a discord server community."
@@ -174,7 +174,6 @@ class Intro(Swirl):
 
     async def get_intro_message_embed(self, config_data, embed_color):
         intro_content = config_data.get("intro_content", [])
-        print(intro_content[self.current_turn])
         next_message = intro_content[self.current_turn]
         embed = discord.Embed(
             title=f"{next_message['title']}", color=embed_color
@@ -190,7 +189,6 @@ class Intro(Swirl):
         prompt = next_message["prompt"]
         spliced_message = prompt + " " + message
         self.messages.append(spliced_message)
-        await self.next_turn()
 
 
     async def get_intro_synthesis_embed(self):

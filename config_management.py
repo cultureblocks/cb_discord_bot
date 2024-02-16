@@ -339,6 +339,7 @@ def update_prompt_data(data, headline, emulsifier, rating):
 
 async def save_intro_data(config_data, intro):
     intros_data = config_data.get("intros_data", [])
+    print(f"save intro intro_channel = {intro.intro_channel}")
 
     intro_data = {
         "guild_id":intro.guild.id,
@@ -370,8 +371,12 @@ async def save_intro_data(config_data, intro):
 async def load_intro(bot, intro_data):
     guild = bot.get_guild(intro_data["guild_id"])
     creator = guild.get_member(intro_data["creator_id"])
+    if creator is None:
+        log_with_timestamp(f"Couldn't load member {intro_data['creator_name']} from {guild.name}")
+        return
     
     intro_channel = guild.get_channel(intro_data["intro_channel_id"])
+    print(f"intro channel = {intro_channel}")
     block_channel = guild.get_channel(intro_data["block_channel_id"])
     block_color = get_color_from_string(creator.name)
     
