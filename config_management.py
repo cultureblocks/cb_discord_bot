@@ -182,7 +182,6 @@ async def setup_reflect(config_data, guild):
     if not thread_embed_content:
         return
 
-    thread_name = thread_embed_content.get("thread_name", "")
     embed = await get_reflect_thread_embed(thread_embed_content)
 
     try:
@@ -194,15 +193,16 @@ async def setup_reflect(config_data, guild):
             embed_message = reflect_message.embeds[0]
             if not compare_embeds(embed_message, embed):
                 await reflect_message.edit(embed=embed) 
-            thread_embed = reflect_message.thread
-            if thread_embed.name != thread_name:
-                await thread_embed.edit(name=thread_name) 
             return
     except Exception as e:
         log_with_timestamp(f"Error looking for {guild.name} in guilds data or match of IDs: {e}")
 
+    video_path = 'cb_discord_bot_intro.mp4'
+    video_file = discord.File(video_path, filename='cb_discord_bot_intro.mp4')
+    await reflect_channel.send(file=video_file)
+
     reflect_message = await reflect_channel.send(embed=embed)
-    thread = await reflect_message.create_thread(name=thread_name)
+    thread = await reflect_message.create_thread(name="The Looking Glass")
     await thread.edit(slowmode_delay=3600)
 
 

@@ -320,8 +320,6 @@ async def next_intro_message(intro, config_data, embed_color):
         await intro.intro_channel.send(embed=embed)
     elif intro.current_turn == len(intro.turns) - 1:
         video_path = 'cb_discord_bot_intro.mp4'
-        # with open(video_path, 'rb') as f:
-        #     video_data = f.read()
         video_file = discord.File(video_path, filename='cb_discord_bot_intro.mp4')
         await intro.intro_channel.send("Here's a video demo to tie it all together", file=video_file)
         await asyncio.sleep(20)
