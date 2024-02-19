@@ -31,6 +31,6 @@ Links:
 - Website - [https://app.charmverse.io/culture-blocks/home-19377272787222233](https://app.charmverse.io/culture-blocks/home-19377272787222233)
 - Discord - [https://discord.gg/dKYm6EQMbk](https://discord.gg/dKYm6EQMbk)
 
-More money = more cool shit:
+More money = more cool stuff:
 
 - Tip jar for any EVM chain - 0xabeEb05bA4764F45e5c0e8Acb02059d7164aD35d
