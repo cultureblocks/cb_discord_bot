@@ -1,7 +1,15 @@
+'''
+    Culture Blocks is a public goods project to build better tools for 
+    social connection and to emerge collective wisdom.
+    Copyright (C) 2024  maenswirony
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+'''
+
 import random
 import re
 import requests
-from typing import Callable
 
 import discord
 import openai
