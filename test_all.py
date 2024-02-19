@@ -1,9 +1,23 @@
+'''
+    Culture Blocks is a public goods project to build better tools for 
+    social connection and to emerge collective wisdom.
+    Copyright (C) 2024  maenswirony
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+'''
+
+
 import pytest
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import AsyncMock, patch
 
 import cb_main
-import config_management
 import swirl
+
+
+
+
+# ---------------- More Tests Coming ---------------------------- #
 
 
 
@@ -90,11 +104,6 @@ async def test_on_raw_reaction_add():
 
 @pytest.mark.asyncio
 async def test_view_prompts(mock_ctx): # Same logic for change prompts
-    # Mock Discord context
-    # mock_ctx = AsyncMock()
-    # mock_author = AsyncMock()
-    # mock_author.name = "TestUser"
-    # mock_ctx.author = mock_author
 
     # Mock external functions
     with patch("config_management.get_random_color", return_value=0xFF0000):
@@ -113,13 +122,7 @@ async def test_view_prompts(mock_ctx): # Same logic for change prompts
 
 
 
-
-
-
-
-
 ## SWIRL
-    
 
 
 @pytest.mark.asyncio
@@ -170,7 +173,7 @@ async def test_synthesize():
 
 
 
-
+# ---------------- More Tests Coming ---------------------------- #
 
 
 

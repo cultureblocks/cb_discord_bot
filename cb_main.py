@@ -47,20 +47,39 @@ intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Variables
-config_data = {} # Load JSON
+config_data = {} # stores json in memory
 intros = {} # {intro_channel.id:intro}
 swirls = {} # {swirl_channel.id:swirl}
-block_wall = {} # [guild.id:block_channel.id]
+block_wall = {} # {guild.id:block_channel.id}
 reflect_threads = [] # [reflect_thread.ids]
 the_looking_glass = discord.TextChannel # channel where reflect feedback agreggates
 
 
 
-## TESTS
-# TODO 
-# sweep for any potential key error situations or other testy stuff
-# TODO may need to use lock for race conditions on vars and config data
+## TESTS TODO
+# - Sweep for any potential key error situations or other testy stuff
+# - May need to use lock for race conditions on vars and config data
 
+
+
+## ADMIN COMMANDS
+
+@bot.command(name="test")
+async def test(ctx, i: int, m: str, l: int = 10, t: str = "0"):
+    if str(ctx.author.id) != ALLOWED_USER_ID:
+        await ctx.send("Sorry, you are not authorized to use this command.", delete_after = 20)
+        return
+    message = m
+    while i > 0:
+        message += m
+        i -= 1
+    tail = ""
+    while l > 0:
+        tail += t
+        l -= 1
+    combined_message = message + tail
+    config_management.log_with_timestamp(combined_message)
+    await ctx.send("Test message sent")
 
 @bot.command(name="viewvars")
 async def view_variables(ctx):
@@ -76,16 +95,16 @@ async def purge(ctx):
     if str(ctx.author.id) != ALLOWED_USER_ID:
         await ctx.send("Sorry, you are not authorized to use this command.", delete_after = 20)
         return
-    if ctx.author.guild_permissions.manage_messages:  # Check if the user has the 'manage_messages' permission
+    if ctx.author.guild_permissions.manage_messages: 
         channel = ctx.channel
-        async for message in channel.history(limit=None):  # Loop through all messages in the channel
+        async for message in channel.history(limit=None):  
             await message.delete()
         await channel.send("Channel cleared.", delete_after=5)
     else:
-        await ctx.send("You don't have permission to manage messages in this channel.")
+        await ctx.send("You don't have permission to manage messages in this channel.", delete_after = 20)
 
 
-async def get_messages_embed():
+async def get_checkin_and_end_messages_embed():
     embed = discord.Embed(title="Bot Messages", color=discord.Color.blue())
 
     # Add check-in messages
@@ -104,7 +123,7 @@ async def view_messages(ctx):
     if str(ctx.author.id) != ALLOWED_USER_ID:
         await ctx.send("Sorry, you are not authorized to use this command.", delete_after = 20)
         return
-    embed = await get_messages_embed()
+    embed = await get_checkin_and_end_messages_embed()
     await ctx.send(embed=embed, delete_after = 20)
 
 @bot.command(name="ac")
@@ -114,7 +133,7 @@ async def add_checkin(ctx, message):
         return
     config_data["check_ins"].append(message)
     await ctx.send(f"Check-in message '{message}' added successfully.", delete_after = 20)
-    embed = await get_messages_embed()
+    embed = await get_checkin_and_end_messages_embed()
     await ctx.send(embed=embed, delete_after = 20)
 
 @bot.command(name="rc")
@@ -125,7 +144,7 @@ async def remove_checkin(ctx, index: int):
     try:
         removed_message = config_data["check_ins"].pop(index)
         await ctx.send(f"Check-in message '{removed_message}' removed successfully.", delete_after = 20)
-        embed = await get_messages_embed()
+        embed = await get_checkin_and_end_messages_embed()
         await ctx.send(embed=embed, delete_after = 20)
     except IndexError:
         await ctx.send("Invalid index provided.", delete_after = 20)
@@ -139,7 +158,7 @@ async def add_endmessage(ctx, theme_name, message):
         if theme["theme_name"] == theme_name:
             theme["messages"].append({"end_message": message, "weight": 1, "counter": 1})
             await ctx.send(f"End message '{message}' added to theme '{theme_name}' successfully.", delete_after = 20)
-            embed = await get_messages_embed()
+            embed = await get_checkin_and_end_messages_embed()
             await ctx.send(embed=embed, delete_after = 20)
             return
     await ctx.send(f"Theme '{theme_name}' not found.", delete_after = 20)
@@ -154,7 +173,7 @@ async def remove_endmessage(ctx, theme_name, index: int):
             try:
                 removed_message = theme["messages"].pop(index)
                 await ctx.send(f"End message '{removed_message['end_message']}' removed from theme '{theme_name}' successfully.", delete_after = 20)
-                embed = await get_messages_embed()
+                embed = await get_checkin_and_end_messages_embed()
                 await ctx.send(embed=embed, delete_after = 20)
                 return
             except IndexError:
@@ -167,13 +186,12 @@ async def add_theme(ctx, theme_name: str):
     if str(ctx.author.id) != ALLOWED_USER_ID:
         await ctx.send("Sorry, you are not authorized to use this command.", delete_after = 20)
         return
-    # Check if the theme already exists
+    
     for theme in config_data["end_messages"]:
         if theme["theme_name"] == theme_name:
             await ctx.send(f"Theme '{theme_name}' already exists.", delete_after = 20)
             return
     
-    # If the theme doesn't exist, add it
     config_data["end_messages"].append({
         "theme_name": theme_name,
         "weight": 1,
@@ -181,7 +199,7 @@ async def add_theme(ctx, theme_name: str):
         "messages": []
     })
     await ctx.send(f"Theme '{theme_name}' added successfully.", delete_after = 20)
-    embed = await get_messages_embed()
+    embed = await get_checkin_and_end_messages_embed()
     await ctx.send(embed=embed, delete_after = 20)
 
 @bot.command(name="rt")
@@ -189,12 +207,12 @@ async def remove_theme(ctx, theme_name: str):
     if str(ctx.author.id) != ALLOWED_USER_ID:
         await ctx.send("Sorry, you are not authorized to use this command.", delete_after = 20)
         return
-    # Check if the theme exists
+    
     for theme in config_data["end_messages"]:
         if theme["theme_name"] == theme_name:
             config_data["end_messages"].remove(theme)
             await ctx.send(f"Theme '{theme_name}' removed successfully.", delete_after = 20)
-            embed = await get_messages_embed()
+            embed = await get_checkin_and_end_messages_embed()
             await ctx.send(embed=embed, delete_after = 20)
             return
     
@@ -210,7 +228,7 @@ async def set_end_message_weight(ctx, theme_name, index: int, weight: int):
             try:
                 theme["messages"][index]["weight"] = weight
                 await ctx.send(f"Weight for end message '{theme['messages'][index]['end_message']}' in theme '{theme_name}' set to {weight} successfully.", delete_after = 20)
-                embed = await get_messages_embed()
+                embed = await get_checkin_and_end_messages_embed()
                 await ctx.send(embed=embed, delete_after = 20)
                 return
             except IndexError:
@@ -227,16 +245,17 @@ async def set_theme_weight(ctx, theme_name, weight: int):
         if theme["theme_name"] == theme_name:
             theme["weight"] = weight
             await ctx.send(f"Weight for theme '{theme_name}' set to {weight} successfully.", delete_after = 20)
-            embed = await get_messages_embed()
+            embed = await get_checkin_and_end_messages_embed()
             await ctx.send(embed=embed, delete_after = 20)
             return
     await ctx.send(f"Theme '{theme_name}' not found.", delete_after = 20)
 
 
+
 ## INTROS
         
 
-# Command from any guild, intro block goes to global blocks
+# Command from any guild, intro block goes to global Blocks
     
 @bot.slash_command(name="intro", description="Learn about CB and build an Intro Block through a solo Swirl")
 async def intro(ctx):
@@ -362,7 +381,6 @@ async def finish_intro(intro):
         embed_message = await intro.block_channel.send(embed=embed)
         await intro.intro_channel.send(f"Great, Let me give you a promotion and print you a new Intro Block ---> {embed_message.jump_url} \n\n This channel will be deleted in five minutes.")
     
-    # Print to all block channels? TODO
     await asyncio.sleep(10)
     if intro.guild.id == int(CB_GUILD):
         await print_cb_intro(intro)
@@ -373,14 +391,15 @@ async def finish_intro(intro):
 
 async def print_cb_intro(intro):
     cb_intros_channel = bot.get_channel(int(CB_INTROS_CHANNEL))
-    embed = await intro.get_intro_synthesis_embed()
-    await cb_intros_channel.send(embed=embed)
+    if cb_intros_channel:
+        embed = await intro.get_intro_synthesis_embed()
+        await cb_intros_channel.send(embed=embed)
 
-    intro.in_cb = True
-    await config_management.save_intro_data(config_data, intro)
+        intro.in_cb = True
+        await config_management.save_intro_data(config_data, intro)
 
-    role = discord.utils.get(intro.guild.roles, name="Block Builders")
-    await intro.creator.add_roles(role)
+        role = discord.utils.get(intro.guild.roles, name="Block Builders")
+        await intro.creator.add_roles(role)
 
 
 ## SWIRL SETUP
@@ -393,28 +412,19 @@ async def create_prompts_embed(ctx, headline, emulsifier, title_suffix="Current 
     embed.add_field(name="Emulsifier", value=emulsifier, inline=False)
     return embed
 
-
-@bot.slash_command(
-    name="viewprompts",
-    description="View your current prompts"
-)
+@bot.slash_command(name="viewprompts", description="View your current prompts")
 async def view_prompts(ctx):
     headline, emulsifier = await config_management.get_member_prompts(config_data, ctx.author)
     embed = await create_prompts_embed(ctx, headline, emulsifier)
     await ctx.respond(embed=embed, delete_after=60)
 
-
-@bot.slash_command(
-    name="changeprompts",
-    description="Change your current prompts",
-)
+@bot.slash_command(name="changeprompts", description="Change your current prompts",)
 @option("headline", str, description="Headlines start the flow of the Swirl. They can be questions, ideas, nonsense, or anything.")
 @option("emulsifier", str, description="Emulsifiers tell GPT how to blend the Swirl content.")
 async def change_prompts(ctx, headline: str = None, emulsifier: str = None):
     h, e = await config_management.get_member_prompts(config_data, ctx.author, headline, emulsifier)
     embed = await create_prompts_embed(ctx, h, e, title_suffix="Prompts changed")
     await ctx.respond(embed=embed, delete_after=60)
-
 
 
 # Start a swirl
@@ -433,7 +443,7 @@ async def start_swirl(ctx, members):
             await ctx.respond("You can only run one swirl at a time", delete_after = 20)
             return
         
-    # Get prompts #TODO for get_synthesis_embed need to remove "the headline is"
+    # Get prompts 
     headline, emulsifier = await config_management.get_member_prompts(config_data, ctx.author)
 
     # Get list of all members (including creator)
@@ -498,7 +508,7 @@ async def start_swirl(ctx, members):
 ## ACTIVE SWIRL
 
 
-# BOT 
+# Bot functions to manage flow
 
 async def next_swirl_message(swirl):
     swirls_data = config_data.get("swirls_data", [])
@@ -513,7 +523,6 @@ async def next_swirl_message(swirl):
         await new_turn_message(swirl)
 
     elif len(swirl_data["members_id_list"]) > len(set(swirl_data["ratings_dict"].keys())):
-        print ("==== 1")
         await synthesis_message(swirl)
 
     else:
@@ -526,6 +535,7 @@ async def ready_set_swirl(swirl):
         await swirl.swirl_channel.send(f"Ready, Set, Swirl! \n \n {swirl.headline}")
         await next_swirl_message(swirl)
 
+
 async def check_in_message(swirl):
     check_in_messages = config_data.get("check_ins", [])
     check_in = random.choice(check_in_messages)
@@ -535,7 +545,7 @@ async def check_in_message(swirl):
         f"{mentions}, you have one minute to check in and join the Swirl. Your check in message is: \n \n {check_in}",
         )
     
-    await asyncio.sleep(60) # TODO testing at 20, go back to 60
+    await asyncio.sleep(60) 
     if len(swirl.turns) < 2:
         await swirl.swirl_channel.send(
             f"It takes at least two to Swirl. \n \n This channel will self destruct in one hour."
@@ -543,9 +553,8 @@ async def check_in_message(swirl):
         swirl.creator = 42
         swirl.destruct = 1
         await config_management.save_swirl_data(config_data, swirl)
-    else:
-        if 3 * len(swirl.members) != len(swirl.turns):
-            await ready_set_swirl(swirl)
+    elif 3 * len(swirl.members) != len(swirl.turns):
+        await ready_set_swirl(swirl)
 
 
 async def new_turn_message(swirl):
@@ -553,7 +562,7 @@ async def new_turn_message(swirl):
     current_turn = int(swirl.current_turn)
     await swirl.swirl_channel.send(f"{next_member.mention} you have five minutes to a send a message up to 1000 characters long.")
     
-    await asyncio.sleep(270) #TODO testing turned 270 into 27
+    await asyncio.sleep(270) 
     if swirl.current_turn == current_turn: 
         await swirl.swirl_channel.send(f"{next_member.mention} you have 30 seconds left to respond")
 
@@ -582,6 +591,7 @@ async def synthesis_message(swirl):
 
 async def new_block_message(swirl):
     swirl.creator = bot.user # So creator can start a new swirl before data deletes
+    await config_management.save_swirl_data(config_data, swirl) 
     
     end_messages_data = config_data.get("end_messages", [])
     available_categories = [category for category in end_messages_data if category["weight"] > 0]
@@ -598,11 +608,10 @@ async def new_block_message(swirl):
         f"The Swirl is complete, a new Block has been printed, and this channel will self destruct in 24 hours! ---> {embed_message.jump_url} \n\n {random_end_message}"
     )
 
-    # Add guild and average rating to ratings for prompt update
+    # Add guild and average rating to ratings dict for prompt update
     ratings = list(swirl.ratings.values())
     average_rating = sum(ratings) / len(ratings)
     swirl.ratings[swirl.guild] = average_rating
-    print (f"swirl ratings after adding guild and avg ========= {swirl.ratings}")
 
     # Update prompts data for each member and guild
     for subject, rating in swirl.ratings.items():
@@ -686,7 +695,6 @@ async def on_message(message: discord.Message):
                 await swirl.swirl_channel.send("That's everyone!")
                 await ready_set_swirl(swirl)
 
-
         # Messages
         elif message.author == swirl.next_member():
             if len(message.content) > 1000:
@@ -734,6 +742,7 @@ async def load_swirl_or_intro(bot, data, container, load_function, next_function
             channel = obj.swirl_channel
         else:
             config_management.log_with_timestamp(f"Failed to load object with data {data}")
+            # Doesn't load intros currently TODO
             return
         container[channel.id] = obj
         await channel.send(f"This {obj.__class__.__name__} has resumed")
@@ -774,10 +783,6 @@ async def on_ready():
     # Load existing Intros
     for intro_data in intros_data:
         await load_swirl_or_intro(bot, intro_data, intros, config_management.load_intro, next_intro_message)
-        print(f"intro data = {intros}")
-
-    
-
 
     await config_management.save_main_json(config_data)
     config_management.log_with_timestamp("Ready")

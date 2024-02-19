@@ -34,3 +34,16 @@ Links:
 More money = more cool stuff:
 
 - Tip jar for any EVM chain - 0xabeEb05bA4764F45e5c0e8Acb02059d7164aD35d
+
+
+Setup:
+
+- Create a .env file with:
+ - DISCORD_TOKEN= your discord token
+ - OPENAI_TOKEN= your openai token
+ - REFLECTIONS= channel id of a target for any posts made under a servers reflect thread
+ - CB_GUILD= server id of your main server (for finish_intro and print_cb_intro functions in cb_main.py)
+ - CB_INTROS_CHANNEL= channel id of a target for intros in your main server to go
+ - ALLOWED_USER_ID= member id of admin (for checkin/end message edit functions at top of cb_main.py)
+
+- Create a file config.json from config_template.json

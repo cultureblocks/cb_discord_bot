@@ -14,6 +14,7 @@ import hashlib
 import datetime
 import asyncio
 import discord
+import sys
 
 from swirl import Swirl, Intro
 
@@ -21,6 +22,7 @@ from swirl import Swirl, Intro
 def log_with_timestamp(message):
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print(f"[{timestamp}] {message}")
+    sys.stdout.flush()
 
 async def load_main_json(counter=0):
     if counter > 5:
