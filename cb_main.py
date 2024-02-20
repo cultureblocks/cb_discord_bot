@@ -81,6 +81,11 @@ async def test(ctx, i: int, m: str, l: int = 10, t: str = "0"):
     config_management.log_with_timestamp(combined_message)
     await ctx.send("Test message sent")
 
+@bot.command(name="error")
+async def error(ctx):
+    await ctx.send("error sent")
+    raise Exception("This is a test error")
+    
 @bot.command(name="viewvars")
 async def view_variables(ctx):
     if str(ctx.author.id) != ALLOWED_USER_ID:
