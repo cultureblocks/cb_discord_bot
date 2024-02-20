@@ -38,7 +38,7 @@ This is the first thing I've built. Issues and PRs are open, feedback is awesome
 
 ### Setup:
 
-1. **Create a .env file with:**
+**Create a .env file with:**
  - DISCORD_TOKEN= your discord token
  - OPENAI_TOKEN= your openai token
  - REFLECTIONS= channel id of a target for any posts made under a servers reflect thread
@@ -47,5 +47,5 @@ This is the first thing I've built. Issues and PRs are open, feedback is awesome
  - ALLOWED_USER_ID= member id of admin (for checkin/end message edit functions at top of cb_main.py)
 
 
-2. **Create a file `config.json` from `config_template.json`.**
+**Create a file `config.json` from `config_template.json`.**
 
