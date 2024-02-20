@@ -82,9 +82,9 @@ async def test(ctx, i: int, m: str, l: int = 10, t: str = "0"):
     await ctx.send("Test message sent")
 
 @bot.command(name="error")
-async def error(ctx):
+async def error(ctx, msg):
     await ctx.send("error sent")
-    raise Exception("This is a test error")
+    raise Exception(f"This is a test error {msg}")
     
 @bot.command(name="viewvars")
 async def view_variables(ctx):
