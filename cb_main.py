@@ -360,7 +360,7 @@ async def next_intro_message(intro, config_data, embed_color):
         video_path = 'cb_discord_bot_intro.mp4'
         video_file = discord.File(video_path, filename='cb_discord_bot_intro.mp4')
         await intro.intro_channel.send("Here's a video demo to tie it all together", file=video_file)
-        await asyncio.sleep(20)
+        await asyncio.sleep(5)
         await intro.intro_channel.send("When you're done watching, send any message to finish your intro.")
 
     else:
@@ -375,11 +375,11 @@ async def finish_intro(intro):
     elif intro.rating < 3 and intro.current_turn == len(intro.turns) + 4:
         embed = await intro.get_intro_synthesis_embed()
         embed_message = await intro.block_channel.send(embed=embed)
-        await intro.intro_channel.send(f"Sorry I couldn't do better :( here's a promotion and your Intro Block ---> {embed_message.jump_url} \n\n This channel will delete in five minutes.")
+        await intro.intro_channel.send(f"Sorry I couldn't do better :( here's a promotion and your Intro Block ---> {embed_message.jump_url} \n\n This channel will delete in ten minutes.")
     else:
         embed = await intro.get_intro_synthesis_embed()
         embed_message = await intro.block_channel.send(embed=embed)
-        await intro.intro_channel.send(f"Great, Let me give you a promotion and print you a new Intro Block ---> {embed_message.jump_url} \n\n This channel will be deleted in five minutes.")
+        await intro.intro_channel.send(f"Great, Let me give you a promotion and print you a new Intro Block ---> {embed_message.jump_url} \n\n This channel will be deleted in ten minutes.")
     
     await asyncio.sleep(10)
     if intro.guild.id == int(CB_GUILD):

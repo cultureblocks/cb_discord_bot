@@ -501,34 +501,25 @@ async def load_swirl(bot, swirl_data):
 
 
 async def destruction_sequence_activate(config_data, bot, swirls): # TODO didnt destroy last swirl
-    swirls_data = config_data.get("swirls_data", [])
-    
-    swirls_to_remove = []
-    
-    for swirl in swirls_data:
-        swirl["destruct"] -= 1
-        if swirl["destruct"] == 0:
-            swirls_to_remove.append(swirl)
+    while True:
+        swirls_data = config_data.get("swirls_data", [])
+        swirls_to_remove = []
+        
+        for swirl in swirls_data:
+            swirl["destruct"] -= 1
+            if swirl["destruct"] == 0:
+                swirls_to_remove.append(swirl)
 
-    swirls_to_remove_set = set()
+        swirls_to_remove_set = set()
 
-    for swirl in swirls_to_remove:
-        swirl_channel_id = swirl["swirl_channel_id"]
-        channel = bot.get_channel(swirl_channel_id)
-        if channel:
-            await channel.delete()
-        swirls.pop(swirl_channel_id, None)
-        swirls_to_remove_set.add(swirl_channel_id)
+        for swirl in swirls_to_remove:
+            swirl_channel_id = swirl["swirl_channel_id"]
+            channel = bot.get_channel(swirl_channel_id)
+            if channel:
+                await channel.delete()
+            swirls.pop(swirl_channel_id, None)
+            swirls_to_remove_set.add(swirl_channel_id)
 
-    config_data["swirls_data"] = [s for s in swirls_data if s["swirl_channel_id"] not in swirls_to_remove_set]
-    await save_main_json(config_data)
-    await asyncio.sleep(60) # TODO 60 for testing, 3600 for production
-    await destruction_sequence_activate(config_data, bot, swirls)
-    
-
-
-
-
-
-
-
+        config_data["swirls_data"] = [s for s in swirls_data if s["swirl_channel_id"] not in swirls_to_remove_set]
+        await save_main_json(config_data)
+        await asyncio.sleep(3600) 

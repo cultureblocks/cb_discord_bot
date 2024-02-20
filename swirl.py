@@ -42,16 +42,19 @@ async def _synthesize(swirlorintro, shorten_message="", counter=0): # TODO updat
     if isinstance(swirlorintro, Swirl):
         headline = "The headline is " + swirlorintro.headline
         emulsifier = "The emulsifier is " + swirlorintro.emulsifier
+    if isinstance(swirlorintro, Intro):
+        headline = " "
+        emulsifier = "Convert the text into an introduction of our newest member "
     try:
         text = _sanitize_input(", ".join(swirlorintro.messages))
         model = "gpt-3.5-turbo"
         messages = [ 
-            {"role": "system", "content": swirlorintro.context + shorten_message + headline + emulsifier },
+            {"role": "system", "content": swirlorintro.context + shorten_message + headline + emulsifier},
             {"role": "user", "content": " the text is "},
         ] + [{"role": "user", "content": chunk} for chunk in text]
-        print("Synthesizing...")
+        print(f"Synthesizing...{messages}")
         try:
-            completion = await openai.ChatCompletion.acreate(model=model, messages=messages, temperature=0.7) # TODO update
+            completion = await openai.ChatCompletion.acreate(model=model, messages=messages, temperature=0.7) 
         except openai.OpenAIError as e:
             print(f"OpenAIError: {e}")
         except requests.exceptions.RequestException as req_exc:
@@ -64,7 +67,7 @@ async def _synthesize(swirlorintro, shorten_message="", counter=0): # TODO updat
             await _synthesize(swirlorintro, "make it short and concise and meaningful", counter)
         else:
             swirlorintro.synthesis = completion["choices"][0]["message"]["content"]
-            print(f"synthesis completed = {swirlorintro.synthesis}")
+            print(f"Synthesis completed = {swirlorintro.synthesis}")
     except openai.OpenAIError as e1:
         return f"OpenAI API error: {e1}"
     except requests.exceptions.RequestException as e2:
@@ -186,7 +189,7 @@ class Intro(Swirl):
         embed = discord.Embed(
             title=f"{next_message['title']}", color=embed_color
         )
-        embed.add_field(name="The Map is not the Terrain", value=next_message['guide'], inline=False)
+        embed.add_field(name=f"The Map is not the Terrain", value=next_message['guide'], inline=False)
         embed.add_field(name="To Continue...", value=next_message['prompt'], inline=False)
         return embed
 
