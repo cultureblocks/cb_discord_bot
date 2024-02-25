@@ -34,6 +34,7 @@ This is the first thing I've built. Issues and PRs are open, feedback is awesome
 ### More money = more cool stuff:
 
 - Tip jar for any EVM chain - 0xabeEb05bA4764F45e5c0e8Acb02059d7164aD35d
+- Drips Network - https://www.drips.network/app/projects/github/cultureblocks/cb_discord_bot
 
 
 ### Setup:
