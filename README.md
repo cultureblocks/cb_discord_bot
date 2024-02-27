@@ -30,6 +30,7 @@ This is the first thing I've built. Issues and PRs are open, feedback is awesome
 
 - Website - [https://app.charmverse.io/culture-blocks/home-19377272787222233](https://app.charmverse.io/culture-blocks/home-19377272787222233)
 - Discord - [https://discord.gg/dKYm6EQMbk](https://discord.gg/dKYm6EQMbk)
+- Bot Invite - [https://discord.com/api/oauth2/authorize?client_id=1134852167258341397&permissions=8&scope=bot](https://discord.com/api/oauth2/authorize?client_id=1134852167258341397&permissions=8&scope=bot)
 
 ### More money = more cool stuff:
 
