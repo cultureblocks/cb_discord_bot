@@ -24,7 +24,7 @@ This is the first thing I've built. Issues and PRs are open, feedback is awesome
 
 - My tag is @maenswirony here, discord, charmverse, and gmail.
 - To talk organizational philosophy, design, tech, culture, spirituality, social systems, economics, or whatever, jump in discord. :)
-- To request adding the bot to your server or inquire about paid features hit me up on any platform.
+- To inquire about paid features, give direct feedback, or anything else hit me up on any platform.
 
 ### Links:
 
