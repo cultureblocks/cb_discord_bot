@@ -24,16 +24,18 @@ This is the first thing I've built. Issues and PRs are open, feedback is awesome
 
 - My tag is @maenswirony here, discord, charmverse, and gmail.
 - To talk organizational philosophy, design, tech, culture, spirituality, social systems, economics, or whatever, jump in discord. :)
-- To request adding the bot to your server or inquire about paid features hit me up on any platform.
+- To inquire about paid features, give direct feedback, or anything else hit me up on any platform.
 
 ### Links:
 
 - Website - [https://app.charmverse.io/culture-blocks/home-19377272787222233](https://app.charmverse.io/culture-blocks/home-19377272787222233)
 - Discord - [https://discord.gg/dKYm6EQMbk](https://discord.gg/dKYm6EQMbk)
+- Bot Invite - [https://discord.com/api/oauth2/authorize?client_id=1134852167258341397&permissions=8&scope=bot](https://discord.com/api/oauth2/authorize?client_id=1134852167258341397&permissions=8&scope=bot)
 
 ### More money = more cool stuff:
 
 - Tip jar for any EVM chain - 0xabeEb05bA4764F45e5c0e8Acb02059d7164aD35d
+- Drips Network - https://www.drips.network/app/projects/github/cultureblocks/cb_discord_bot
 
 
 ### Setup:
