@@ -47,7 +47,7 @@ async def _synthesize(swirlorintro, shorten_message="", counter=0): # TODO updat
         emulsifier = "Convert the text into an introduction of our newest member "
     try:
         text = _sanitize_input(", ".join(swirlorintro.messages))
-        model = "gpt-3.5-turbo-instruct"
+        model = "gpt-3.5-turbo-0125" ## Doesnt work TODO
         messages = [ 
             {"role": "system", "content": swirlorintro.context + shorten_message + headline + emulsifier},
             {"role": "user", "content": " the text is "},
