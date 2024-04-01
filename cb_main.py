@@ -336,7 +336,8 @@ async def on_raw_reaction_add(payload):
                 await print_cb_intro(intro)
 
         else:  
-            await start_intro_flow(guild, payload.member)
+            channel_id = await start_intro_flow(guild, payload.member)
+            await payload.channel.send(f"Starting an Intro Swirl...<#{channel_id}>", delete_after=30)
 
 
 # Intro flow
