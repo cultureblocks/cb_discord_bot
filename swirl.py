@@ -40,16 +40,16 @@ async def _synthesize(swirlorintro, shorten_message="", counter=0): # TODO updat
     if counter > 5:
         swirlorintro.synthesis =  "I couldn't get the synthesis short enough, sorry!"
     if isinstance(swirlorintro, Swirl):
-        headline = "The headline is " + swirlorintro.headline
+        inspiration = "The inspiration is " + swirlorintro.inspiration
         emulsifier = "The emulsifier is " + swirlorintro.emulsifier
     if isinstance(swirlorintro, Intro):
-        headline = " "
+        inspiration = " "
         emulsifier = "Convert the text into an introduction of our newest member "
     try:
         text = _sanitize_input(", ".join(swirlorintro.messages))
         model = "gpt-3.5-turbo-0125" ## Doesnt work TODO
         messages = [ 
-            {"role": "system", "content": swirlorintro.context + shorten_message + headline + emulsifier},
+            {"role": "system", "content": swirlorintro.context + shorten_message + inspiration + emulsifier},
             {"role": "user", "content": " the text is "},
         ] + [{"role": "user", "content": chunk} for chunk in text]
         print(f"Synthesizing...{messages}")
@@ -82,7 +82,7 @@ class Swirl:
         self,
         guild: discord.Guild,
         creator: discord.Member,
-        headline: str,
+        inspiration: str,
         emulsifier: str,
         members: list[discord.Member],
         swirl_channel: discord.TextChannel,
@@ -92,7 +92,7 @@ class Swirl:
 
         self.guild = guild
         self.creator = creator
-        self.headline = headline
+        self.inspiration = inspiration
         self.emulsifier = emulsifier
         self.members = members
         self.swirl_channel = swirl_channel
@@ -102,7 +102,7 @@ class Swirl:
         self.turns = []
         self.current_turn = 0
         self.messages = []
-        self.context = "The following is a headline (theme for a conversation), an emulsifier (directions for what you should do with the text), and the conversation text itself."
+        self.context = "The following is a inspiration (theme for a conversation), an emulsifier (directions for what you should do with the text), and the conversation text itself."
         self.synthesis = None
         self.ratings = {} # {discord.Member:int}
         self.destruct = 24
@@ -134,7 +134,7 @@ class Swirl:
         embed = discord.Embed(
             title=f"Server: {self.guild.name}", color=block_color
         )
-        embed.add_field(name="Headline", value=self.headline, inline=False)
+        embed.add_field(name="Inspiration", value=self.inspiration, inline=False)
         embed.add_field(name="Emulsifier", value=self.emulsifier, inline=False)
         embed.add_field(name="Synthesis", value=self.synthesis, inline=False)
         ratings = [f"{member.name}: {rating}" for member, rating in self.ratings.items()]

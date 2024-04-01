@@ -153,7 +153,7 @@
         {
             "guild_id": 1234,
             "creator_id": 1234,
-            "headline": "headline",
+            "inspiration": "inspiration",
             "emulsifier": "emulsifier",
             "members_id_list": [
                 12,
@@ -190,12 +190,12 @@
                 "member_id": 1,
                 "member_name": "name",
                 "last_prompts": {
-                    "headline": "headline",
+                    "inspiration": "inspiration",
                     "emulsifier": "emulsifier."
                 },
-                "headlines": [
+                "inspirations": [
                     {
-                        "headline": "headline",
+                        "inspiration": "inspiration",
                         "weight": 1,
                         "counter": 2
                     }
@@ -213,9 +213,9 @@
             {
                 "guild_id": 1234,
                 "guild_name": "name",
-                "headlines": [
+                "inspirations": [
                     {
-                        "headline": "headline",
+                        "inspiration": "inspiration",
                         "weight": 1,
                         "counter": 1
                     }

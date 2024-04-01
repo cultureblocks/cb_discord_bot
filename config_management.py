@@ -227,17 +227,17 @@ async def guild_setup(bot, config_data, guild_id):
     return channel_data
 
 
-async def get_member_prompts(config_data, member, headline=None, emulsifier=None):
+async def get_member_prompts(config_data, member, inspiration=None, emulsifier=None):
     member_id = member.id
     prompts_data = config_data.get("prompts_data",{})
     members_data = prompts_data.get("member_prompts", [])
     
     for m in members_data:
         if m["member_id"] == member_id:
-            if headline == None:
-                headline = m["last_prompts"]["headline"]
+            if inspiration == None:
+                inspiration = m["last_prompts"]["inspiration"]
             else:
-                m["last_prompts"]["headline"] = headline
+                m["last_prompts"]["inspiration"] = inspiration
             if emulsifier == None:
                 emulsifier = m["last_prompts"]["emulsifier"]
             else:
@@ -245,12 +245,12 @@ async def get_member_prompts(config_data, member, headline=None, emulsifier=None
             break
 
     else:
-        new_member = await new_member_prompts(member, members_data, headline, emulsifier)
-        headline = new_member["last_prompts"]["headline"]
+        new_member = await new_member_prompts(member, members_data, inspiration, emulsifier)
+        inspiration = new_member["last_prompts"]["inspiration"]
         emulsifier = new_member["last_prompts"]["emulsifier"]
 
     await save_main_json(config_data)
-    return headline, emulsifier
+    return inspiration, emulsifier
 
 
 # New member prompts
@@ -258,12 +258,12 @@ async def get_member_prompts(config_data, member, headline=None, emulsifier=None
 def new_member_prompts(
         member, 
         members_data,
-        headline = None, 
+        inspiration = None, 
         emulsifier = None
         ):
 
-    if headline is None:
-        headline = "Share something you find inspiring from a culture other than your own" 
+    if inspiration is None:
+        inspiration = "Share something you find inspiring from a culture other than your own" 
     if emulsifier is None:
         emulsifier = "Create and describe a new culture based on the text provided"
 
@@ -271,10 +271,10 @@ def new_member_prompts(
             "member_id": member.id,
             "member_name": member.name,
             "last_prompts": {
-                "headline": headline, 
+                "inspiration": inspiration, 
                 "emulsifier": emulsifier
             },
-            "headlines": [
+            "inspirations": [
             ],
             "emulsifiers": [
             ]
@@ -284,7 +284,7 @@ def new_member_prompts(
     return new_member_data
 
 
-async def update_prompts_data(config_data, subject, headline, emulsifier, rating):
+async def update_prompts_data(config_data, subject, inspiration, emulsifier, rating):
     prompts_data = config_data.get("prompts_data", {})
 
     if isinstance(subject, discord.Member):
@@ -294,8 +294,8 @@ async def update_prompts_data(config_data, subject, headline, emulsifier, rating
                 member_data = member
                 break
         if member_data is None:
-            member_data = new_member_prompts(subject, prompts_data["member_prompts"], headline, emulsifier)
-        update_prompt_data(member_data, headline, emulsifier, rating)
+            member_data = new_member_prompts(subject, prompts_data["member_prompts"], inspiration, emulsifier)
+        update_prompt_data(member_data, inspiration, emulsifier, rating)
 
     elif isinstance(subject, discord.Guild):
         guild_data = None
@@ -304,18 +304,18 @@ async def update_prompts_data(config_data, subject, headline, emulsifier, rating
                 guild_data = guild
                 break
         if guild_data is None:
-            guild_data = {"guild_id": subject.id, "guild_name": subject.name, "headlines": [], "emulsifiers": []}
+            guild_data = {"guild_id": subject.id, "guild_name": subject.name, "inspirations": [], "emulsifiers": []}
             prompts_data["guild_prompts"].append(guild_data)
-        update_prompt_data(guild_data, headline, emulsifier, rating)
+        update_prompt_data(guild_data, inspiration, emulsifier, rating)
 
     elif subject is None:
-        update_prompt_data(prompts_data["global_prompts"], headline, emulsifier, rating)
+        update_prompt_data(prompts_data["global_prompts"], inspiration, emulsifier, rating)
 
     await save_main_json(config_data)
 
-def update_prompt_data(data, headline, emulsifier, rating):
+def update_prompt_data(data, inspiration, emulsifier, rating):
     print (f"------- prompt data = {data}")
-    print (f"------- headline {headline} emulsifier {emulsifier} and rating {rating}")
+    print (f"------- inspiration {inspiration} emulsifier {emulsifier} and rating {rating}")
     weight_change = 0
 
     if rating < 2:
@@ -324,16 +324,16 @@ def update_prompt_data(data, headline, emulsifier, rating):
         weight_change = 1
 
     for key, value in data.items():
-        if key == "headlines":
+        if key == "inspirations":
             for item in value:
-                print(f"item headline = {item['headline']}")
-                if item["headline"] == headline:
+                print(f"item inspiration = {item['inspiration']}")
+                if item["inspiration"] == inspiration:
                     item["weight"] = max(item["weight"] + weight_change, 1)
                     item["counter"] += 1
                     break
             else:
                 new_weight = 1
-                value.append({"headline": headline, "weight": new_weight, "counter": 1})
+                value.append({"inspiration": inspiration, "weight": new_weight, "counter": 1})
 
         elif key == "emulsifiers":
             for item in value:
@@ -429,7 +429,7 @@ async def save_swirl_data(config_data, swirl):
     swirl_data = {
         "guild_id":swirl.guild.id,
         "creator_id":swirl.creator.id,
-        "headline":swirl.headline,
+        "inspiration":swirl.inspiration,
         "emulsifier":swirl.emulsifier,
         "members_id_list":member_id_list,
         "swirl_channel_id":swirl.swirl_channel.id,
@@ -472,7 +472,7 @@ async def load_swirl(bot, swirl_data):
     swirl = Swirl(
             guild,
             creator,
-            swirl_data["headline"],
+            swirl_data["inspiration"],
             swirl_data["emulsifier"],
             members,
             swirl_channel,

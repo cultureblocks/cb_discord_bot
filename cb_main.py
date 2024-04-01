@@ -259,7 +259,32 @@ async def set_theme_weight(ctx, theme_name, weight: int):
 
 ## INTROS
         
+# Test intro flow
+    
+@bot.command(name="testintro")
+async def test_intro(ctx):
+    if str(ctx.author.id) != ALLOWED_USER_ID:
+        await ctx.send("Sorry, you are not authorized to use this command.", delete_after = 20)
+        return
 
+    intro_channel = ctx.channel
+    block_channel = ctx.channel
+    block_color = config_management.get_color_from_string(ctx.author.name)
+
+    # Build intro
+    intro = Intro(
+        ctx.guild,
+        ctx.author,
+        intro_channel,
+        block_channel,
+        block_color
+    )
+
+    intros[intro.intro_channel.id]=intro
+    await config_management.save_intro_data(config_data, intro)
+    embed_color = config_management.get_random_color()
+    await intro_channel.send(f"{ctx.author.mention}, your Intro is starting")
+    await next_intro_message(intro, config_data, embed_color)
 # Command from any guild, intro block goes to global Blocks
     
 @bot.slash_command(name="intro", description="Learn about CB and build an Intro Block through a solo Swirl")
@@ -410,24 +435,24 @@ async def print_cb_intro(intro):
 ## SWIRL SETUP
 
 
-async def create_prompts_embed(ctx, headline, emulsifier, title_suffix="Current prompts"):
+async def create_prompts_embed(ctx, inspiration, emulsifier, title_suffix="Current prompts"):
     random_color = config_management.get_random_color()
     embed = discord.Embed(title=f"{title_suffix} for {ctx.author.name}", color=random_color)
-    embed.add_field(name="Headline", value=headline, inline=False)
+    embed.add_field(name="Inspiration", value=inspiration, inline=False)
     embed.add_field(name="Emulsifier", value=emulsifier, inline=False)
     return embed
 
 @bot.slash_command(name="viewprompts", description="View your current prompts")
 async def view_prompts(ctx):
-    headline, emulsifier = await config_management.get_member_prompts(config_data, ctx.author)
-    embed = await create_prompts_embed(ctx, headline, emulsifier)
+    inspiration, emulsifier = await config_management.get_member_prompts(config_data, ctx.author)
+    embed = await create_prompts_embed(ctx, inspiration, emulsifier)
     await ctx.respond(embed=embed, delete_after=60)
 
 @bot.slash_command(name="changeprompts", description="Change your current prompts",)
-@option("headline", str, description="Headlines start the flow of the Swirl. They can be questions, ideas, nonsense, or anything.")
+@option("inspiration", str, description="Inspirations start the flow of the Swirl. They can be questions, ideas, nonsense, or anything.")
 @option("emulsifier", str, description="Emulsifiers tell GPT how to blend the Swirl content.")
-async def change_prompts(ctx, headline: str = None, emulsifier: str = None):
-    h, e = await config_management.get_member_prompts(config_data, ctx.author, headline, emulsifier)
+async def change_prompts(ctx, inspiration: str = None, emulsifier: str = None):
+    h, e = await config_management.get_member_prompts(config_data, ctx.author, inspiration, emulsifier)
     embed = await create_prompts_embed(ctx, h, e, title_suffix="Prompts changed")
     await ctx.respond(embed=embed, delete_after=60)
 
@@ -449,7 +474,7 @@ async def start_swirl(ctx, members):
             return
         
     # Get prompts 
-    headline, emulsifier = await config_management.get_member_prompts(config_data, ctx.author)
+    inspiration, emulsifier = await config_management.get_member_prompts(config_data, ctx.author)
 
     # Get list of all members (including creator)
     member_ids = {int(match.group(1)) for match in re.finditer(r'<@(\d+)>', members)}
@@ -494,7 +519,7 @@ async def start_swirl(ctx, members):
     swirl = Swirl(
         ctx.guild,
         ctx.author,
-        headline,
+        inspiration,
         emulsifier,
         members,
         swirl_channel,
@@ -537,7 +562,7 @@ async def next_swirl_message(swirl):
 async def ready_set_swirl(swirl):
         swirl.randomize_members()
         await config_management.save_swirl_data(config_data, swirl)
-        await swirl.swirl_channel.send(f"Ready, Set, Swirl! \n \n {swirl.headline}")
+        await swirl.swirl_channel.send(f"Ready, Set, Swirl! \n \n {swirl.inspiration}")
         await next_swirl_message(swirl)
 
 
@@ -620,7 +645,7 @@ async def new_block_message(swirl):
 
     # Update prompts data for each member and guild
     for subject, rating in swirl.ratings.items():
-        await config_management.update_prompts_data(config_data, subject, swirl.headline, swirl.emulsifier, rating)
+        await config_management.update_prompts_data(config_data, subject, swirl.inspiration, swirl.emulsifier, rating)
 
     # Send block to all guilds
     for guild_id, block_channel_id in block_wall.items():
@@ -791,7 +816,7 @@ async def on_ready():
 
     await config_management.save_main_json(config_data)
     config_management.log_with_timestamp("Ready")
-    await asyncio.sleep(60) # TODO testing at 60, 3600 prod
+    await asyncio.sleep(3600)
     await config_management.destruction_sequence_activate(config_data, bot, swirls)
     
 
