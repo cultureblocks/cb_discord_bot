@@ -40,6 +40,7 @@ REFLECTIONS = os.environ.get("REFLECTIONS")
 CB_GUILD = os.environ.get("CB_GUILD")
 CB_INTROS_CHANNEL = os.environ.get("CB_INTROS_CHANNEL")
 ALLOWED_USER_ID = os.environ.get("ALLOWED_USER_ID")
+BE_COOL_CHANNEL_ID = os.environ.get("BE_COOL_CHANNEL_ID")
 
 
 # Bot setup
@@ -336,8 +337,8 @@ async def on_raw_reaction_add(payload):
                 await print_cb_intro(intro)
 
         else:  
-            channel_id = await start_intro_flow(guild, payload.member)
-            await payload.channel.send(f"Starting an Intro Swirl...<#{channel_id}>", delete_after=30)
+            await start_intro_flow(guild, payload.member)
+
 
 
 # Intro flow
@@ -377,6 +378,9 @@ async def start_intro_flow(guild, member):
     intros[intro.intro_channel.id]=intro
     await config_management.save_intro_data(config_data, intro)
     embed_color = config_management.get_random_color()
+    if guild.id == int(CB_GUILD):
+        be_cool_channel = bot.get_channel(int(BE_COOL_CHANNEL_ID))
+        await be_cool_channel.send(f"Starting an Intro Swirl...<#{intro_channel.id}>", delete_after=30)
     await intro_channel.send(f"{member.mention}, your Intro is starting")
     await next_intro_message(intro, config_data, embed_color)
     return intro.intro_channel.id
