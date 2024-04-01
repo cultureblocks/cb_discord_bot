@@ -32,6 +32,7 @@ async def load_main_json(counter=0):
     try:
         with open(main_json, "r") as config_file:
             config_data = json.load(config_file)
+            log_with_timestamp("Data loaded.", config_data)
             return config_data
     except FileNotFoundError:
         log_with_timestamp("File not found.")
