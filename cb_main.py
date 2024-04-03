@@ -256,6 +256,37 @@ async def set_theme_weight(ctx, theme_name, weight: int):
             return
     await ctx.send(f"Theme '{theme_name}' not found.", delete_after = 20)
 
+@bot.command()
+async def edit_be_cool(ctx):
+    be_cool_data = config_data.get("be_cool_react", {})
+    message_id = be_cool_data.get("message_id")
+    channel_id = be_cool_data.get("channel_id")
+
+    if str(ctx.author.id) != ALLOWED_USER_ID:
+        await ctx.send("Sorry, you are not authorized to use this command.", delete_after=20)
+        return
+    
+    channel = bot.get_channel(channel_id)
+    if not channel:
+        await ctx.send("The specified channel was not found.", delete_after=20)
+        return
+    try:
+        message = await channel.fetch_message(message_id)
+    except discord.NotFound:
+        await ctx.send("The specified message was not found in the channel.", delete_after=20)
+        return
+    except discord.Forbidden:
+        await ctx.send("I don't have permission to access the messages in the specified channel.", delete_after=20)
+        return
+
+    # Assuming 'new_embed_data' is a dictionary with your new embed information
+    new_embed = discord.Embed(description="1. Be cool\n2. Don't not be cool\n3. Hit the 😎 to join the party", color=discord.Color.purple())
+
+    if message.embeds:
+        await message.edit(embed=new_embed)
+        await ctx.send("The embed has been updated successfully!")
+    else:
+        await ctx.send("No embeds found in the message to update.", delete_after=20)
 
 
 ## INTROS
@@ -286,6 +317,8 @@ async def test_intro(ctx):
     embed_color = config_management.get_random_color()
     await intro_channel.send(f"{ctx.author.mention}, your Intro is starting")
     await next_intro_message(intro, config_data, embed_color)
+
+
 # Command from any guild, intro block goes to global Blocks
     
 @bot.slash_command(name="intro", description="Learn about CB and build an Intro Block through a solo Swirl")
@@ -304,6 +337,7 @@ async def intro(ctx):
 ## if yes, adds block to CB intros channel
 ## if no, starts intro flow
     
+
 @bot.event
 async def on_raw_reaction_add(payload):
     be_cool_data = config_data.get("be_cool_react", {})
