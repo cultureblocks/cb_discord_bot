@@ -256,7 +256,7 @@ async def set_theme_weight(ctx, theme_name, weight: int):
             return
     await ctx.send(f"Theme '{theme_name}' not found.", delete_after = 20)
 
-@bot.command()
+@bot.command(name="be_cool")
 async def edit_be_cool(ctx):
     be_cool_data = config_data.get("be_cool_react", {})
     message_id = be_cool_data.get("message_id")
